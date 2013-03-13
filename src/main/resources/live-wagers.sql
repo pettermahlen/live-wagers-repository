@@ -17,7 +17,7 @@ CREATE
     transaction_type TINYINT NOT NULL,
     amount BIGINT NOT NULL,
     transaction_time TIMESTAMP NOT NULL,
-    PRIMARY KEY (wager_round_id, transaction_id)
+    PRIMARY KEY (wager_round_id, transaction_id, transaction_type)
   );
 
 PARTITION TABLE wager_round_transaction ON COLUMN wager_round_id;

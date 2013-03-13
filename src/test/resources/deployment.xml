@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <deployment>
-  <security enabled="true" />
+  <security enabled="false" />
   <users>
     <user name="admin"
           password="admin"
@@ -14,7 +14,7 @@
   </users>
   <cluster hostcount="1"
            sitesperhost="2" />
-  <httpd enabled="true" port="8081">
+  <httpd enabled="true" port="8082">
     <jsonapi enabled="true" />
   </httpd>
 </deployment>

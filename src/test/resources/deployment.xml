@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<deployment>
+  <security enabled="true" />
+  <users>
+    <user name="admin"
+          password="admin"
+          groups="system,app,test"/>
+    <user name="app"
+          password="app"
+          groups="app"/>
+    <user name="test"
+          password="test"
+          groups="app,test"/>
+  </users>
+  <cluster hostcount="1"
+           sitesperhost="2" />
+  <httpd enabled="true" port="8081">
+    <jsonapi enabled="true" />
+  </httpd>
+</deployment>

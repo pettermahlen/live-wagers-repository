@@ -1,4 +1,3 @@
-
 The live-wagers-repository depends on:
 * Java
 * Maven
@@ -15,12 +14,16 @@ installed. See http://voltdb.com/community/learning-resources.php for a lot abou
 4. Add $VOLTDB_HOME/bin to your path.
 
 Then, you need to install the following jars locally:
-1. org.voltdb:voltdb:jar:3.0
-1.1. Clone the https://github.com/pettermahlen/voltdb-pom git repo and 'cd' into that directory
-1.2. run 'mvn install:install-file -Dfile=$VOLTDB_HOME/voltdb/voltdb-3.0.jar -DpomFile=voltdb-3.0.pom
-2. org.zeromq:zmq:jar:2.1.11
-2.1. 'cd' into the $VOLTDB_HOME/lib directory
-2.2. run `mvn install:install-file -Dfile=zmq-2.1.11.jar -DgroupId=org.zeromq -DartifactId=zmq -Dpackaging=jar -Dversion=2.1.11`
+
+`org.voltdb:voltdb:jar:3.0`
+
+1. Clone the https://github.com/pettermahlen/voltdb-pom git repo and 'cd' into that directory
+2. run 'mvn install:install-file -Dfile=$VOLTDB_HOME/voltdb/voltdb-3.0.jar -DpomFile=voltdb-3.0.pom
+
+`org.zeromq:zmq:jar:2.1.11`
+
+1. 'cd' into the $VOLTDB_HOME/lib directory
+2. run `mvn install:install-file -Dfile=zmq-2.1.11.jar -DgroupId=org.zeromq -DartifactId=zmq -Dpackaging=jar -Dversion=2.1.11`
 
 Once this is all done, you should be able to build using `mvn package`.
 

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.williamsinteractive.casino</groupId>
+  <artifactId>live-wagers-repository</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Live Wagers Repository catalogue</name>
+
+  <prerequisites>
+    <maven>3.0.3</maven>
+  </prerequisites>
+
+
+  <properties>
+    <catalogue.jar.name>${project.build.directory}/${project.build.finalName}.jar</catalogue.jar.name>
+  </properties>
+
+  <dependencies>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+         <!-- Compile the voltdb catalogue for deployment -->
+          <execution>
+            <id>run-voltdb-compiler</id>
+            <phase>package</phase>
+
+            <configuration>
+              <target>
+                <java classname="org.voltdb.compiler.VoltCompiler" fork="yes" failonerror="true">
+                  <jvmarg value="-Dlog4j.configuration=file:src/main/resources/log4j.properties" />
+                  <arg value="${voltdb.amalgamated.file}" />
+                  <arg value="${catalogue.jar.name}" />
+                  <classpath refid="maven.compile.classpath" />
+                  <assertions>
+                    <disable />
+                  </assertions>
+                </java>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.8.1</version>
+            <exclusions>
+              <exclusion>
+                <groupId>ant</groupId>
+                <artifactId>ant-nodeps</artifactId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <id>VoltDBStart</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>src/test/scripts/startvoltdb.sh</executable>
+              <arguments>
+                <argument>${catalogue.jar.name}</argument>
+                <argument>src/test/resources/deployment.xml</argument>
+                <argument>localhost</argument>
+                <argument>target/voltdb-stdout.log</argument>
+                <argument>target/voltdb-err.log</argument>
+                <argument>target/voltdb.pid</argument>
+                <argument>${clover.version}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>VoltDBStop</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>src/test/scripts/stopvoltdb.sh</executable>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

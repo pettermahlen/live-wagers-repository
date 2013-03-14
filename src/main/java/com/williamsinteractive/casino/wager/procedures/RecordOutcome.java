@@ -21,6 +21,9 @@ public class RecordOutcome extends VoltProcedure {
     private static final SQLStmt UPDATE = new SQLStmt(
         "UPDATE wager_round SET outcome_amount = ?, outcome_timestamp = ? WHERE wager_round_id = ?"
     );
+    private static final SQLStmt SELECT_WAGER_STATES = new SQLStmt(
+        "SELECT * FROM wager_state WHERE wager_round_id = ? ORDER BY state"
+    );
 
     private static final String[] ERROR_MESSAGES = new String[] {
         "SUCCESS",
@@ -39,6 +42,10 @@ public class RecordOutcome extends VoltProcedure {
         }
 
         voltQueueSQL(UPDATE, EXPECT_ONE_ROW, amount, getTransactionTime().getTime(), wagerRoundId);
+        voltExecuteSQL();
+
+        voltQueueSQL(SELECT_WAGER_STATES, wagerRoundId);
+        voltQueueSQL(SELECT, wagerRoundId);
         return voltExecuteSQL(true);
     }
 

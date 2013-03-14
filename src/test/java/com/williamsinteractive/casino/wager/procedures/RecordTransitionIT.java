@@ -8,7 +8,6 @@ import org.voltdb.client.ClientResponse;
 import org.voltdb.client.ProcCallException;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import static com.williamsinteractive.casino.wager.procedures.RecordWagerTransition.STATES;
@@ -132,30 +131,6 @@ public class RecordTransitionIT extends VoltDbTestSupport {
     }
 
 
-    static final Map<String, Long> REQUEST_MONEY_ROW = ImmutableMap.of("wager_round_id",
-                                                                       WAGER_ROUND_ID,
-                                                                       "wager_id",
-                                                                       WAGER_ID,
-                                                                       "amount",
-                                                                       AMOUNT,
-                                                                       "state",
-                                                                       Long.valueOf(STATES.get("REQUEST_MONEY")));
-    static final Map<String, Long> GOT_MONEY_ROW = ImmutableMap.of("wager_round_id",
-                                                                   WAGER_ROUND_ID,
-                                                                   "wager_id",
-                                                                   WAGER_ID,
-                                                                   "amount",
-                                                                   AMOUNT,
-                                                                   "state",
-                                                                   Long.valueOf(STATES.get("GOT_MONEY")));
-    static final Map<String, Long> GOT_OUTCOME_ROW = ImmutableMap.of("wager_round_id",
-                                                                     WAGER_ROUND_ID,
-                                                                     "wager_id",
-                                                                     WAGER_ID,
-                                                                     "amount",
-                                                                     AMOUNT,
-                                                                     "state",
-                                                                     Long.valueOf(STATES.get("GOT_OUTCOME")));
     static final Map<String, Long> OUTCOME_CONFIRMED_ROW = ImmutableMap.of("wager_round_id",
                                                                            WAGER_ROUND_ID,
                                                                            "wager_id",

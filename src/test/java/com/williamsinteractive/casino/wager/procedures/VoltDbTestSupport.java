@@ -1,6 +1,7 @@
 package com.williamsinteractive.casino.wager.procedures;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.williamsinteractive.casino.wager.procedures.RecordWagerTransition.STATES;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -31,6 +33,30 @@ public class VoltDbTestSupport {
     protected static final long EXCHANGE_RATE_ID = 543543;
     protected static final long AMOUNT = 675323;
     protected static final long DUMMY_TIMESTAMP = 987231;
+    static final Map<String, Long> REQUEST_MONEY_ROW = ImmutableMap.of("wager_round_id",
+                                                                       WAGER_ROUND_ID,
+                                                                       "wager_id",
+                                                                       WAGER_ID,
+                                                                       "amount",
+                                                                       AMOUNT,
+                                                                       "state",
+                                                                       Long.valueOf(STATES.get("REQUEST_MONEY")));
+    static final Map<String, Long> GOT_MONEY_ROW = ImmutableMap.of("wager_round_id",
+                                                                   WAGER_ROUND_ID,
+                                                                   "wager_id",
+                                                                   WAGER_ID,
+                                                                   "amount",
+                                                                   AMOUNT,
+                                                                   "state",
+                                                                   Long.valueOf(STATES.get("GOT_MONEY")));
+    static final Map<String, Long> GOT_OUTCOME_ROW = ImmutableMap.of("wager_round_id",
+                                                                     WAGER_ROUND_ID,
+                                                                     "wager_id",
+                                                                     WAGER_ID,
+                                                                     "amount",
+                                                                     AMOUNT,
+                                                                     "state",
+                                                                     Long.valueOf(STATES.get("GOT_OUTCOME")));
     protected Client client;
 
     @Before
@@ -64,6 +90,7 @@ public class VoltDbTestSupport {
                                                        WAGER_ROUND_ID,
                                                        GAME_ID,
                                                        EXCHANGE_RATE_ID,
+                                                       null,
                                                        null,
                                                        null);
 

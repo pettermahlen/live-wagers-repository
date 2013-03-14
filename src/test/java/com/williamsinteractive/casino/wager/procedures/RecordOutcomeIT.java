@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.voltdb.VoltTable;
+import org.voltdb.VoltType;
 import org.voltdb.client.ClientResponse;
 import org.voltdb.client.ProcCallException;
 
@@ -12,6 +13,8 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -61,6 +64,32 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
         assertThat(response.getAppStatusString(), containsString(String.valueOf(WAGER_ROUND_ID)));
     }
 
+    @Test
+    public void shouldReturnAllTransitionsAndTheWagerRound() throws Exception {
+        prepareWagerRound();
+        prepareTransition("REQUEST_MONEY");
+        prepareTransition("GOT_MONEY");
+        prepareTransition("GOT_OUTCOME");
+
+        ClientResponse response = recordOutcome(AMOUNT);
+
+        assertThat(response.getAppStatus(), equalTo(RecordOutcome.SUCCESS));
+
+        VoltTable[] tables = response.getResults();
+
+        assertThat(tables.length, equalTo(2));
+
+        VoltTable wagers = tables[0];
+        VoltTable wagerRound = tables[1];
+
+        verifyTable(wagers, ImmutableList.of(REQUEST_MONEY_ROW, GOT_MONEY_ROW, GOT_OUTCOME_ROW));
+        verifyTable(wagerRound, ImmutableList.of(WAGER_ROUND_WITH_OUTCOME));
+
+        wagerRound.resetRowPosition();
+        wagerRound.advanceRow();
+        assertThat(wagerRound.get("archive_timestamp", VoltType.TIMESTAMP), is(nullValue()));
+    }
+
     private void prepareOutcome() throws IOException, ProcCallException {
         ClientResponse response = client.callProcedure("WAGER_ROUND.update",
                                                        WAGER_ROUND_ID,
@@ -68,6 +97,7 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
                                                        EXCHANGE_RATE_ID,
                                                        AMOUNT,
                                                        DUMMY_TIMESTAMP,
+                                                       null,
                                                        WAGER_ROUND_ID);
 
         assertThat(response, isSuccess());

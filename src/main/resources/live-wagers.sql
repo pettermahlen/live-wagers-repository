@@ -6,6 +6,7 @@ CREATE
     exchange_rate_id BIGINT NOT NULL,
     outcome_amount BIGINT, -- will be null until outcome has happened
     outcome_timestamp TIMESTAMP, -- will be null until outcome has happened
+    archive_timestamp TIMESTAMP, -- will be null until wager round has been archived
     PRIMARY KEY (wager_round_id)
   );
 

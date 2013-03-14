@@ -29,12 +29,12 @@ public class RecordOutcome extends VoltProcedure {
     };
 
     public VoltTable[] run(long wagerRoundId, long amount) {
-        byte previousState = checkPreviousState(wagerRoundId);
+        byte errorCode = validate(wagerRoundId);
 
-        setAppStatusCode(previousState);
+        setAppStatusCode(errorCode);
 
-        if (previousState != SUCCESS) {
-            setAppStatusString(String.format(ERROR_MESSAGES[previousState], wagerRoundId));
+        if (errorCode != SUCCESS) {
+            setAppStatusString(String.format(ERROR_MESSAGES[errorCode], wagerRoundId));
             return new VoltTable[0];
         }
 
@@ -42,7 +42,7 @@ public class RecordOutcome extends VoltProcedure {
         return voltExecuteSQL(true);
     }
 
-    private byte checkPreviousState(long wagerRoundId) {
+    private byte validate(long wagerRoundId) {
         voltQueueSQL(SELECT, wagerRoundId);
         VoltTable[] tables = voltExecuteSQL();
 

@@ -15,6 +15,14 @@
 
 
   <properties>
+    <default.encoding>UTF-8</default.encoding>
+    <!--
+    duplicating the configuration above, since this is the variable automatically picked up by a lot of plugins,
+    as well as things like Sonar. http://maven.apache.org/general.html#encoding-warning
+    -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- for failsafe -->
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <catalogue.jar.name>${project.build.directory}/${project.build.finalName}.jar</catalogue.jar.name>
   </properties>
 

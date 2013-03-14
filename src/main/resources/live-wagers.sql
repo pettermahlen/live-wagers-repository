@@ -10,17 +10,17 @@ CREATE
 PARTITION TABLE wager_round ON COLUMN wager_round_id;
 
 CREATE
-  TABLE wager_round_transaction -- TODO: not 'transaction'?!
+  TABLE wager_state
   (
     wager_round_id BIGINT NOT NULL,
-    transaction_id BIGINT NOT NULL,
-    transaction_type TINYINT NOT NULL,
+    wager_id BIGINT NOT NULL,
+    state TINYINT NOT NULL,
     amount BIGINT NOT NULL,
-    transaction_time TIMESTAMP NOT NULL,
-    PRIMARY KEY (wager_round_id, transaction_id, transaction_type)
+    created TIMESTAMP NOT NULL,
+    PRIMARY KEY (wager_round_id, wager_id, state)
   );
 
-PARTITION TABLE wager_round_transaction ON COLUMN wager_round_id;
+PARTITION TABLE wager_state ON COLUMN wager_round_id;
 
 
 -- Roles
@@ -32,3 +32,6 @@ CREATE ROLE test WITH sysproc,adhoc,defaultproc;
 -- Procedures
 CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordTransition;
 PARTITION PROCEDURE RecordTransition ON TABLE wager_round COLUMN wager_round_id;
+
+CREATE PROCEDURE WAGER_ROUND_SELECT_ALL ALLOW test AS SELECT * FROM wager_round;
+CREATE PROCEDURE WAGER_STATE_SELECT_ALL ALLOW test AS SELECT * FROM wager_state;

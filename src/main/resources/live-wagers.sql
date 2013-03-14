@@ -4,6 +4,8 @@ CREATE
     wager_round_id BIGINT NOT NULL,
     game_id BIGINT NOT NULL,
     exchange_rate_id BIGINT NOT NULL,
+    outcome_amount BIGINT, -- will be null until outcome has happened
+    outcome_timestamp TIMESTAMP, -- will be null until outcome has happened
     PRIMARY KEY (wager_round_id)
   );
 
@@ -30,8 +32,11 @@ CREATE ROLE app WITH sysproc;
 CREATE ROLE test WITH sysproc,adhoc,defaultproc;
 
 -- Procedures
-CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordTransition;
-PARTITION PROCEDURE RecordTransition ON TABLE wager_round COLUMN wager_round_id;
+CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordWagerTransition;
+PARTITION PROCEDURE RecordWagerTransition ON TABLE wager_round COLUMN wager_round_id;
+
+CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordWagerOutcome;
+PARTITION PROCEDURE RecordWagerOutcome ON TABLE wager_round COLUMN wager_round_id;
 
 CREATE PROCEDURE WAGER_ROUND_SELECT_ALL ALLOW test AS SELECT * FROM wager_round;
 CREATE PROCEDURE WAGER_STATE_SELECT_ALL ALLOW test AS SELECT * FROM wager_state;

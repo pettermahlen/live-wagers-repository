@@ -13,7 +13,7 @@ import java.util.Map;
  * @author Petter Måhlén
  */
 
-public class RecordTransition extends VoltProcedure {
+public class RecordWagerTransition extends VoltProcedure {
     private final SQLStmt INSERT_WAGER_ROUND = new SQLStmt(
         "INSERT INTO wager_round (wager_round_id, game_id, exchange_rate_id)" +
             " VALUES (?, ?, ?)"

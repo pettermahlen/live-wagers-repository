@@ -19,9 +19,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static com.williamsinteractive.casino.wager.procedures.RecordTransition.STATES;
+import static com.williamsinteractive.casino.wager.procedures.RecordWagerTransition.STATES;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -37,39 +38,6 @@ public class RecordTransitionIT {
     private static final long AMOUNT = 675323;
     private static final long DUMMY_TIMESTAMP = 987231;
 
-    static final Map<String, Long> REQUEST_MONEY_ROW = ImmutableMap.of("wager_round_id",
-                                                                       WAGER_ROUND_ID,
-                                                                       "wager_id",
-                                                                       WAGER_ID,
-                                                                       "amount",
-                                                                       AMOUNT,
-                                                                       "state",
-                                                                       Long.valueOf(STATES.get("REQUEST_MONEY")));
-    static final Map<String, Long> GOT_MONEY_ROW = ImmutableMap.of("wager_round_id",
-                                                                   WAGER_ROUND_ID,
-                                                                   "wager_id",
-                                                                   WAGER_ID,
-                                                                   "amount",
-                                                                   AMOUNT,
-                                                                   "state",
-                                                                   Long.valueOf(STATES.get("GOT_MONEY")));
-    static final Map<String, Long> GOT_OUTCOME_ROW = ImmutableMap.of("wager_round_id",
-                                                                   WAGER_ROUND_ID,
-                                                                   "wager_id",
-                                                                   WAGER_ID,
-                                                                   "amount",
-                                                                   AMOUNT,
-                                                                   "state",
-                                                                   Long.valueOf(STATES.get("GOT_OUTCOME")));
-    static final Map<String, Long> OUTCOME_CONFIRMED_ROW = ImmutableMap.of("wager_round_id",
-                                                                   WAGER_ROUND_ID,
-                                                                   "wager_id",
-                                                                   WAGER_ID,
-                                                                   "amount",
-                                                                   AMOUNT,
-                                                                   "state",
-                                                                   Long.valueOf(STATES.get("OUTCOME_CONFIRMED")));
-
 
     protected Client client;
     Map<String, Long> expectedRow;
@@ -82,17 +50,6 @@ public class RecordTransitionIT {
 
         clearTable("wager_round", new FirstLong());
         clearTable("wager_state", new WagerStatePK());
-    }
-
-    protected void clearTable(String tableName,
-                              Function<VoltTable, Object[]> primaryKeyFunction) throws IOException, ProcCallException {
-        String upperCaseTable = tableName.toUpperCase();
-
-        VoltTable table = client.callProcedure(upperCaseTable + "_SELECT_ALL").getResults()[0];
-
-        while (table.advanceRow()) {
-            client.callProcedure(upperCaseTable + ".delete", primaryKeyFunction.apply(table));
-        }
     }
 
     @After
@@ -188,7 +145,7 @@ public class RecordTransitionIT {
         ClientResponse response = recordTransition(toState);
 
         String expectedErrorMessage = String.format("%s without a corresponding %s", toState, requiredPrevious);
-        assertThat(response.getAppStatus(), equalTo(RecordTransition.INVALID_TRANSITION));
+        assertThat(response.getAppStatus(), equalTo(RecordWagerTransition.INVALID_TRANSITION));
         assertThat(response.getAppStatusString(), containsString(expectedErrorMessage));
     }
 
@@ -196,13 +153,15 @@ public class RecordTransitionIT {
         ClientResponse response = client.callProcedure("WAGER_ROUND.insert",
                                                        WAGER_ROUND_ID,
                                                        GAME_ID,
-                                                       EXCHANGE_RATE_ID);
+                                                       EXCHANGE_RATE_ID,
+                                                       null,
+                                                       null);
 
         assertThat(response, isSuccess());
     }
 
     private ClientResponse recordTransition(String newState) throws IOException, ProcCallException {
-        ClientResponse response = client.callProcedure("RecordTransition",
+        ClientResponse response = client.callProcedure("RecordWagerTransition",
                                                        WAGER_ROUND_ID,
                                                        WAGER_ID,
                                                        newState,
@@ -218,7 +177,7 @@ public class RecordTransitionIT {
         ClientResponse response = client.callProcedure("WAGER_STATE.insert",
                                                        WAGER_ROUND_ID,
                                                        WAGER_ID,
-                                                       RecordTransition.STATES.get(transitionName),
+                                                       RecordWagerTransition.STATES.get(transitionName),
                                                        AMOUNT,
                                                        DUMMY_TIMESTAMP);
 
@@ -258,4 +217,50 @@ public class RecordTransitionIT {
                                 input.getLong(2)};
         }
     }
+
+
+    protected void clearTable(String tableName,
+                              Function<VoltTable, Object[]> primaryKeyFunction) throws IOException, ProcCallException {
+        String upperCaseTable = tableName.toUpperCase();
+
+        VoltTable table = client.callProcedure(upperCaseTable + "_SELECT_ALL").getResults()[0];
+
+        while (table.advanceRow()) {
+            client.callProcedure(upperCaseTable + ".delete", primaryKeyFunction.apply(table));
+        }
+    }
+
+
+    static final Map<String, Long> REQUEST_MONEY_ROW = ImmutableMap.of("wager_round_id",
+                                                                       WAGER_ROUND_ID,
+                                                                       "wager_id",
+                                                                       WAGER_ID,
+                                                                       "amount",
+                                                                       AMOUNT,
+                                                                       "state",
+                                                                       Long.valueOf(STATES.get("REQUEST_MONEY")));
+    static final Map<String, Long> GOT_MONEY_ROW = ImmutableMap.of("wager_round_id",
+                                                                   WAGER_ROUND_ID,
+                                                                   "wager_id",
+                                                                   WAGER_ID,
+                                                                   "amount",
+                                                                   AMOUNT,
+                                                                   "state",
+                                                                   Long.valueOf(STATES.get("GOT_MONEY")));
+    static final Map<String, Long> GOT_OUTCOME_ROW = ImmutableMap.of("wager_round_id",
+                                                                     WAGER_ROUND_ID,
+                                                                     "wager_id",
+                                                                     WAGER_ID,
+                                                                     "amount",
+                                                                     AMOUNT,
+                                                                     "state",
+                                                                     Long.valueOf(STATES.get("GOT_OUTCOME")));
+    static final Map<String, Long> OUTCOME_CONFIRMED_ROW = ImmutableMap.of("wager_round_id",
+                                                                           WAGER_ROUND_ID,
+                                                                           "wager_id",
+                                                                           WAGER_ID,
+                                                                           "amount",
+                                                                           AMOUNT,
+                                                                           "state",
+                                                                           Long.valueOf(STATES.get("OUTCOME_CONFIRMED")));
 }

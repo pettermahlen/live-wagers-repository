@@ -35,8 +35,8 @@ CREATE ROLE test WITH sysproc,adhoc,defaultproc;
 CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordWagerTransition;
 PARTITION PROCEDURE RecordWagerTransition ON TABLE wager_round COLUMN wager_round_id;
 
-CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordWagerOutcome;
-PARTITION PROCEDURE RecordWagerOutcome ON TABLE wager_round COLUMN wager_round_id;
+CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordOutcome;
+PARTITION PROCEDURE RecordOutcome ON TABLE wager_round COLUMN wager_round_id;
 
 CREATE PROCEDURE WAGER_ROUND_SELECT_ALL ALLOW test AS SELECT * FROM wager_round;
 CREATE PROCEDURE WAGER_STATE_SELECT_ALL ALLOW test AS SELECT * FROM wager_state;

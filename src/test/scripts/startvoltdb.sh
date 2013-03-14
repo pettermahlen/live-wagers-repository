@@ -18,8 +18,6 @@ do
 
     EXIT_CODE=$?
     if [ "$EXIT_CODE" == "0" ]; then
-        echo $RESPONSE
-
         if [[ "$RESPONSE" =~ .*status.:1,.* ]]; then
             exit 0
         else

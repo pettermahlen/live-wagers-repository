@@ -6,9 +6,7 @@ import org.junit.Test;
 import org.voltdb.VoltTable;
 import org.voltdb.VoltType;
 import org.voltdb.client.ClientResponse;
-import org.voltdb.client.ProcCallException;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -24,8 +22,6 @@ import static org.junit.Assert.assertThat;
  */
 public class RecordOutcomeIT extends VoltDbTestSupport {
 
-    public static final long AMOUNT = 8796123L;
-
     @Test
     public void shouldRecordOutcomeWhenNormal() throws Exception {
         prepareWagerRound();
@@ -33,7 +29,7 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
         prepareTransition("GOT_MONEY");
         prepareTransition("GOT_OUTCOME");
 
-        recordOutcome(AMOUNT);
+        recordOutcome(OUTCOME_AMOUNT);
 
         VoltTable wagerRound = readAllData("WAGER_ROUND_SELECT_ALL");
 
@@ -48,7 +44,7 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
         prepareTransition("GOT_OUTCOME");
         prepareOutcome();
 
-        ClientResponse response = recordOutcome(AMOUNT);
+        ClientResponse response = recordOutcome(OUTCOME_AMOUNT);
 
         assertThat("duplicate", response.getAppStatus(), equalTo(RecordOutcome.DUPLICATE_OUTCOME));
         assertThat(response.getAppStatusString(), containsString("Duplicate outcome reported"));
@@ -57,7 +53,7 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
 
     @Test
     public void shouldFailIfNoWagerExists() throws Exception {
-        ClientResponse response = recordOutcome(AMOUNT);
+        ClientResponse response = recordOutcome(OUTCOME_AMOUNT);
 
         assertThat("missing", response.getAppStatus(), equalTo(RecordOutcome.NO_SUCH_WAGER));
         assertThat(response.getAppStatusString(), containsString("No wager found"));
@@ -71,7 +67,7 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
         prepareTransition("GOT_MONEY");
         prepareTransition("GOT_OUTCOME");
 
-        ClientResponse response = recordOutcome(AMOUNT);
+        ClientResponse response = recordOutcome(OUTCOME_AMOUNT);
 
         assertThat(response.getAppStatus(), equalTo(RecordOutcome.SUCCESS));
 
@@ -90,19 +86,6 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
         assertThat(wagerRound.get("archive_timestamp", VoltType.TIMESTAMP), is(nullValue()));
     }
 
-    private void prepareOutcome() throws IOException, ProcCallException {
-        ClientResponse response = client.callProcedure("WAGER_ROUND.update",
-                                                       WAGER_ROUND_ID,
-                                                       GAME_ID,
-                                                       EXCHANGE_RATE_ID,
-                                                       AMOUNT,
-                                                       DUMMY_TIMESTAMP,
-                                                       null,
-                                                       WAGER_ROUND_ID);
-
-        assertThat(response, isSuccess());
-    }
-
     private ClientResponse recordOutcome(long amount) throws Exception {
         ClientResponse response = client.callProcedure("RecordOutcome", WAGER_ROUND_ID, amount);
 
@@ -112,5 +95,5 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
 
     private static final Map<String, Long> WAGER_ROUND_WITH_OUTCOME =
         ImmutableMap.of("wager_round_id", WAGER_ROUND_ID,
-                        "outcome_amount", AMOUNT);
+                        "outcome_amount", OUTCOME_AMOUNT);
 }

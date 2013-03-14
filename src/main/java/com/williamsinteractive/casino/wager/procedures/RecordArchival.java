@@ -10,28 +10,27 @@ import org.voltdb.VoltType;
  *
  * @author Petter Måhlén
  */
-public class RecordOutcome extends VoltProcedure {
+public class RecordArchival extends VoltProcedure {
     public static final byte SUCCESS = 0;
-    public static final byte DUPLICATE_OUTCOME = 1;
-    public static final byte NO_SUCH_WAGER = 2;
+    public static final byte ALREADY_ARCHIVED = 1;
+    public static final byte NO_WAGER = 2;
+    public static final byte NO_OUTCOME = 3;
 
     private static final SQLStmt SELECT = new SQLStmt(
         "SELECT * FROM wager_round WHERE wager_round_id = ?"
     );
     private static final SQLStmt UPDATE = new SQLStmt(
-        "UPDATE wager_round SET outcome_amount = ?, outcome_timestamp = ? WHERE wager_round_id = ?"
-    );
-    private static final SQLStmt SELECT_WAGER_STATES = new SQLStmt(
-        "SELECT * FROM wager_state WHERE wager_round_id = ? ORDER BY state"
+        "UPDATE wager_round SET archive_timestamp = ? WHERE wager_round_id = ?"
     );
 
     private static final String[] ERROR_MESSAGES = new String[] {
         "SUCCESS",
-        "Duplicate outcome reported for wager_round_id %d",
-        "No wager found for wager_round_id %d"
+        "wager_round_id %d has already been archived",
+        "No wager found for wager_round_id %d",
+        "No outcome found for wager_round_id %d",
     };
 
-    public VoltTable[] run(long wagerRoundId, long amount) {
+    public VoltTable[] run(long wagerRoundId) {
         byte errorCode = validate(wagerRoundId);
 
         setAppStatusCode(errorCode);
@@ -41,27 +40,27 @@ public class RecordOutcome extends VoltProcedure {
             return new VoltTable[0];
         }
 
-        voltQueueSQL(UPDATE, EXPECT_ONE_ROW, amount, getTransactionTime(), wagerRoundId);
-        voltExecuteSQL();
-
-        voltQueueSQL(SELECT_WAGER_STATES, wagerRoundId);
-        voltQueueSQL(SELECT, wagerRoundId);
+        voltQueueSQL(UPDATE, getTransactionTime(), wagerRoundId);
         return voltExecuteSQL(true);
     }
 
     private byte validate(long wagerRoundId) {
         voltQueueSQL(SELECT, wagerRoundId);
-        VoltTable[] tables = voltExecuteSQL();
 
-        VoltTable result = tables[0];
+        VoltTable result = voltExecuteSQL()[0];
 
         if (result.getRowCount() == 0) {
-            return NO_SUCH_WAGER;
+            return NO_WAGER;
         }
 
         result.advanceRow();
-        if (!VoltType.BIGINT.getNullValue().equals(result.getLong("outcome_amount"))) {
-            return DUPLICATE_OUTCOME;
+
+        if (result.get("outcome_timestamp", VoltType.TIMESTAMP) == null) {
+            return NO_OUTCOME;
+        }
+
+        if (result.get("archive_timestamp", VoltType.TIMESTAMP) != null) {
+            return ALREADY_ARCHIVED;
         }
 
         return SUCCESS;

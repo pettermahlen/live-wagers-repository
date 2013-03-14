@@ -39,5 +39,8 @@ PARTITION PROCEDURE RecordWagerTransition ON TABLE wager_round COLUMN wager_roun
 CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordOutcome;
 PARTITION PROCEDURE RecordOutcome ON TABLE wager_round COLUMN wager_round_id;
 
+CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordArchival;
+PARTITION PROCEDURE RecordArchival ON TABLE wager_round COLUMN wager_round_id;
+
 CREATE PROCEDURE WAGER_ROUND_SELECT_ALL ALLOW test AS SELECT * FROM wager_round;
 CREATE PROCEDURE WAGER_STATE_SELECT_ALL ALLOW test AS SELECT * FROM wager_state;

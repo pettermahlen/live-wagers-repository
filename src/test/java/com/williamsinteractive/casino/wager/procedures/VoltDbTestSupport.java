@@ -27,6 +27,7 @@ import static org.junit.Assert.assertThat;
  * @author Petter Måhlén
  */
 public class VoltDbTestSupport {
+    protected static final long OUTCOME_AMOUNT = 8796123L;
     protected static final long WAGER_ROUND_ID = 2376;
     protected static final long WAGER_ID = 8765;
     protected static final long GAME_ID = 87436523;
@@ -130,6 +131,32 @@ public class VoltDbTestSupport {
                 assertThat("key: " + key, table.getLong(key), equalTo(expectedRow.get(key)));
             }
         }
+    }
+
+    protected void prepareOutcome() throws IOException, ProcCallException {
+        ClientResponse response = client.callProcedure("WAGER_ROUND.update",
+                                                       WAGER_ROUND_ID,
+                                                       GAME_ID,
+                                                       EXCHANGE_RATE_ID,
+                                                       AMOUNT,
+                                                       DUMMY_TIMESTAMP,
+                                                       null,
+                                                       WAGER_ROUND_ID);
+
+        assertThat(response, isSuccess());
+    }
+
+    protected void prepareArchival() throws IOException, ProcCallException {
+        ClientResponse response = client.callProcedure("WAGER_ROUND.update",
+                                                       WAGER_ROUND_ID,
+                                                       GAME_ID,
+                                                       EXCHANGE_RATE_ID,
+                                                       AMOUNT,
+                                                       DUMMY_TIMESTAMP,
+                                                       DUMMY_TIMESTAMP,
+                                                       WAGER_ROUND_ID);
+
+        assertThat(response, isSuccess());
     }
 
     private static class WagerStatePK implements Function<VoltTable, Object[]> {

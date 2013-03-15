@@ -21,10 +21,7 @@ public class RecordArchivalIT extends VoltDbTestSupport {
     @Test
     public void shouldSetArchivalTimestampNormally() throws Exception {
         prepareWagerRound();
-        prepareWager();
-        prepareWager();
-        prepareWager();
-        prepareOutcome();
+        prepareConfirmedOutcome();
 
         ClientResponse response  = recordArchival();
 
@@ -47,11 +44,10 @@ public class RecordArchivalIT extends VoltDbTestSupport {
     }
 
     @Test
-    public void shouldFailIfNoOutcome() throws Exception {
+    public void shouldFailIfNoConfirmedOutcome() throws Exception {
         prepareWagerRound();
         prepareWager();
-        prepareWager();
-        prepareWager();
+        prepareOutcome();
 
         ClientResponse response  = recordArchival();
 
@@ -64,9 +60,7 @@ public class RecordArchivalIT extends VoltDbTestSupport {
     public void shouldFailIfAlreadyArchived() throws Exception {
         prepareWagerRound();
         prepareWager();
-        prepareWager();
-        prepareWager();
-        prepareOutcome();
+        prepareConfirmedOutcome();
         prepareArchival();
 
         ClientResponse response  = recordArchival();

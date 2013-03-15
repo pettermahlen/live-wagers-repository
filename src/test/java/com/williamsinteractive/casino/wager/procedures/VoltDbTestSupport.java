@@ -29,10 +29,27 @@ public class VoltDbTestSupport {
     protected static final long OUTCOME_AMOUNT = 8796123L;
     protected static final long WAGER_ROUND_ID = 2376;
     protected static final long WAGER_ID = 8765;
+    protected static final long WAGER_ID2 = 34655;
     protected static final long GAME_ID = 87436523;
     protected static final long EXCHANGE_RATE_ID = 543543;
     protected static final long AMOUNT = 675323;
+    protected static final long AMOUNT2 = 2354;
     protected static final long DUMMY_TIMESTAMP = 987231;
+
+    protected static final List<Matcher<VoltTable>> WAGER_ROUND_WITH_OUTCOME =
+        ImmutableList.<Matcher<VoltTable>>of(
+            new BigIntMatcher("wager_round_id", WAGER_ROUND_ID),
+            new BigIntMatcher("outcome_amount", OUTCOME_AMOUNT),
+            new ColumnValueMatcher(new ColumnValue("outcome_timestamp", VoltType.TIMESTAMP, null)),
+            new ColumnValueMatcher(new ColumnValue("archive_timestamp", VoltType.TIMESTAMP, null))
+        );
+    protected static final List<Matcher<VoltTable>> WAGER_ROUND_WITH_CONFIRMED_OUTCOME =
+        ImmutableList.<Matcher<VoltTable>>of(
+            new BigIntMatcher("wager_round_id", WAGER_ROUND_ID),
+            new BigIntMatcher("outcome_amount", OUTCOME_AMOUNT),
+            new NotNullMatcher("outcome_timestamp", VoltType.TIMESTAMP),
+            new ColumnValueMatcher(new ColumnValue("archive_timestamp", VoltType.TIMESTAMP, null))
+        );
 
     static final List<Matcher<VoltTable>> REQUEST_MONEY_ROW = ImmutableList.<Matcher<VoltTable>>of(
         new BigIntMatcher("wager_round_id", WAGER_ROUND_ID),
@@ -45,6 +62,13 @@ public class VoltDbTestSupport {
         new BigIntMatcher("wager_round_id", WAGER_ROUND_ID),
         new BigIntMatcher("wager_id", WAGER_ID),
         new BigIntMatcher("amount", AMOUNT),
+        new NotNullMatcher("created", VoltType.TIMESTAMP),
+        new NotNullMatcher("confirmed", VoltType.TIMESTAMP)
+    );
+    static final List<Matcher<VoltTable>> GOT_MONEY_ROW2 = ImmutableList.<Matcher<VoltTable>>of(
+        new BigIntMatcher("wager_round_id", WAGER_ROUND_ID),
+        new BigIntMatcher("wager_id", WAGER_ID2),
+        new BigIntMatcher("amount", AMOUNT2),
         new NotNullMatcher("created", VoltType.TIMESTAMP),
         new NotNullMatcher("confirmed", VoltType.TIMESTAMP)
     );
@@ -106,6 +130,28 @@ public class VoltDbTestSupport {
         assertThat(response, isSuccess());
     }
 
+    protected void completeWager() throws Exception {
+        ClientResponse response = client.callProcedure("WAGER.insert",
+                                                       WAGER_ROUND_ID,
+                                                       WAGER_ID,
+                                                       AMOUNT,
+                                                       DUMMY_TIMESTAMP,
+                                                       DUMMY_TIMESTAMP);
+
+        assertThat(response, isSuccess());
+    }
+
+    protected void completeWager2() throws Exception {
+        ClientResponse response = client.callProcedure("WAGER.insert",
+                                                       WAGER_ROUND_ID,
+                                                       WAGER_ID2,
+                                                       AMOUNT2,
+                                                       DUMMY_TIMESTAMP,
+                                                       DUMMY_TIMESTAMP);
+
+        assertThat(response, isSuccess());
+    }
+
     protected Matcher<? super ClientResponse> isSuccess() {
         return new ClientResponseSuccess();
     }
@@ -135,7 +181,20 @@ public class VoltDbTestSupport {
                                                        WAGER_ROUND_ID,
                                                        GAME_ID,
                                                        EXCHANGE_RATE_ID,
-                                                       AMOUNT,
+                                                       OUTCOME_AMOUNT,
+                                                       null,
+                                                       null,
+                                                       WAGER_ROUND_ID);
+
+        assertThat(response, isSuccess());
+    }
+
+    protected void prepareConfirmedOutcome() throws IOException, ProcCallException {
+        ClientResponse response = client.callProcedure("WAGER_ROUND.update",
+                                                       WAGER_ROUND_ID,
+                                                       GAME_ID,
+                                                       EXCHANGE_RATE_ID,
+                                                       OUTCOME_AMOUNT,
                                                        DUMMY_TIMESTAMP,
                                                        null,
                                                        WAGER_ROUND_ID);

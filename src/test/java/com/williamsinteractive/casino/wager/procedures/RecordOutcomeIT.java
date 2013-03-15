@@ -1,13 +1,13 @@
 package com.williamsinteractive.casino.wager.procedures;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.voltdb.VoltTable;
 import org.voltdb.VoltType;
 import org.voltdb.client.ClientResponse;
 
-import java.util.Map;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -25,9 +25,9 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
     @Test
     public void shouldRecordOutcomeWhenNormal() throws Exception {
         prepareWagerRound();
-        prepareTransition("REQUEST_MONEY");
-        prepareTransition("GOT_MONEY");
-        prepareTransition("GOT_OUTCOME");
+        prepareWager();
+        prepareWager();
+        prepareWager();
 
         recordOutcome(OUTCOME_AMOUNT);
 
@@ -39,9 +39,9 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
     @Test
     public void shouldFailIfAnOutcomeExists() throws Exception {
         prepareWagerRound();
-        prepareTransition("REQUEST_MONEY");
-        prepareTransition("GOT_MONEY");
-        prepareTransition("GOT_OUTCOME");
+        prepareWager();
+        prepareWager();
+        prepareWager();
         prepareOutcome();
 
         ClientResponse response = recordOutcome(OUTCOME_AMOUNT);
@@ -63,9 +63,9 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
     @Test
     public void shouldReturnAllTransitionsAndTheWagerRound() throws Exception {
         prepareWagerRound();
-        prepareTransition("REQUEST_MONEY");
-        prepareTransition("GOT_MONEY");
-        prepareTransition("GOT_OUTCOME");
+        prepareWager();
+        prepareWager();
+        prepareWager();
 
         ClientResponse response = recordOutcome(OUTCOME_AMOUNT);
 
@@ -78,7 +78,7 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
         VoltTable wagers = tables[0];
         VoltTable wagerRound = tables[1];
 
-        verifyTable(wagers, ImmutableList.of(REQUEST_MONEY_ROW, GOT_MONEY_ROW, GOT_OUTCOME_ROW));
+        verifyTable(wagers, ImmutableList.of(REQUEST_MONEY_ROW, GOT_MONEY_ROW));
         verifyTable(wagerRound, ImmutableList.of(WAGER_ROUND_WITH_OUTCOME));
 
         wagerRound.resetRowPosition();
@@ -93,7 +93,9 @@ public class RecordOutcomeIT extends VoltDbTestSupport {
         return response;
     }
 
-    private static final Map<String, Long> WAGER_ROUND_WITH_OUTCOME =
-        ImmutableMap.of("wager_round_id", WAGER_ROUND_ID,
-                        "outcome_amount", OUTCOME_AMOUNT);
+    private static final List<Matcher<VoltTable>> WAGER_ROUND_WITH_OUTCOME =
+        ImmutableList.<Matcher<VoltTable>>of(
+            new BigIntMatcher("wager_round_id", WAGER_ROUND_ID),
+            new BigIntMatcher("outcome_amount", OUTCOME_AMOUNT)
+        );
 }

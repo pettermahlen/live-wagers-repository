@@ -21,9 +21,9 @@ public class RecordArchivalIT extends VoltDbTestSupport {
     @Test
     public void shouldSetArchivalTimestampNormally() throws Exception {
         prepareWagerRound();
-        prepareTransition("REQUEST_MONEY");
-        prepareTransition("GOT_MONEY");
-        prepareTransition("GOT_OUTCOME");
+        prepareWager();
+        prepareWager();
+        prepareWager();
         prepareOutcome();
 
         ClientResponse response  = recordArchival();
@@ -49,9 +49,9 @@ public class RecordArchivalIT extends VoltDbTestSupport {
     @Test
     public void shouldFailIfNoOutcome() throws Exception {
         prepareWagerRound();
-        prepareTransition("REQUEST_MONEY");
-        prepareTransition("GOT_MONEY");
-        prepareTransition("GOT_OUTCOME");
+        prepareWager();
+        prepareWager();
+        prepareWager();
 
         ClientResponse response  = recordArchival();
 
@@ -63,9 +63,9 @@ public class RecordArchivalIT extends VoltDbTestSupport {
     @Test
     public void shouldFailIfAlreadyArchived() throws Exception {
         prepareWagerRound();
-        prepareTransition("REQUEST_MONEY");
-        prepareTransition("GOT_MONEY");
-        prepareTransition("GOT_OUTCOME");
+        prepareWager();
+        prepareWager();
+        prepareWager();
         prepareOutcome();
         prepareArchival();
 

@@ -34,10 +34,16 @@ CREATE ROLE test WITH sysproc,adhoc,defaultproc;
 
 -- Procedures
 CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordWager;
-PARTITION PROCEDURE RecordWager ON TABLE wager_round COLUMN wager_round_id;
+PARTITION PROCEDURE RecordWager ON TABLE wager COLUMN wager_round_id;
+
+CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.ConfirmWager;
+PARTITION PROCEDURE ConfirmWager ON TABLE wager COLUMN wager_round_id;
 
 CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordOutcome;
 PARTITION PROCEDURE RecordOutcome ON TABLE wager_round COLUMN wager_round_id;
+
+CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.ConfirmOutcome;
+PARTITION PROCEDURE ConfirmOutcome ON TABLE wager_round COLUMN wager_round_id;
 
 CREATE PROCEDURE ALLOW app FROM CLASS com.williamsinteractive.casino.wager.procedures.RecordArchival;
 PARTITION PROCEDURE RecordArchival ON TABLE wager_round COLUMN wager_round_id;

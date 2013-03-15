@@ -13,6 +13,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * TODO: document!
@@ -60,6 +61,12 @@ public class RecordWagerIT extends VoltDbTestSupport {
         assertThat(response.getAppStatusString(), containsString(String.valueOf(WAGER_ID)));
     }
 
+    @Test
+    public void shouldFailIfThereIsAnOutcomeForTheWagerRound() throws Exception {
+
+        fail("test not implemented");
+
+    }
 
     private ClientResponse recordWager() throws IOException, ProcCallException {
         ClientResponse response = client.callProcedure("RecordWager",

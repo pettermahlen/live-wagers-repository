@@ -6,10 +6,10 @@ import org.voltdb.VoltTable;
 import org.voltdb.VoltType;
 
 /**
-* TODO: document!
-*
-* @author Petter Måhlén
-*/
+ * TODO: document!
+ *
+ * @author Petter Måhlén
+ */
 class NotNullMatcher extends TypeSafeMatcher<VoltTable> {
     private final String column;
     private final VoltType type;

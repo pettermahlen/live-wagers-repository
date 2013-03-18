@@ -15,7 +15,7 @@ public class ConfirmWager extends VoltProcedure {
     public static final byte NO_SUCH_WAGER = 1;
     public static final byte DUPLICATE_CONFIRMATION = 2;
 
-    private static final String[] ERROR_MESSAGES = new String[] {
+    private static final String[] ERROR_MESSAGES = new String[]{
         "SUCCESS",
         "No wager found for wager round id %d and wager id %d",
         "Wager with wager round id %d and wager id %d already confirmed"

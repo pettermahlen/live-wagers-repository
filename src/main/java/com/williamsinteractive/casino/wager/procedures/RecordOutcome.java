@@ -22,7 +22,7 @@ public class RecordOutcome extends VoltProcedure {
         "UPDATE wager_round SET outcome_amount = ? WHERE wager_round_id = ?"
     );
 
-    private static final String[] ERROR_MESSAGES = new String[] {
+    private static final String[] ERROR_MESSAGES = new String[]{
         "SUCCESS",
         "Duplicate outcome reported for wager_round_id %d",
         "No wager found for wager_round_id %d"

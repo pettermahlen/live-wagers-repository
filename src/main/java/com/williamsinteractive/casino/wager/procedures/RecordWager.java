@@ -4,8 +4,6 @@ import org.voltdb.SQLStmt;
 import org.voltdb.VoltProcedure;
 import org.voltdb.VoltTable;
 
-import java.util.Map;
-
 /**
  * TODO: document!
  *

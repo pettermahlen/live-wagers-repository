@@ -73,11 +73,11 @@ public class VoltDbTestSupport {
         new NotNullMatcher("confirmed", VoltType.TIMESTAMP)
     );
 
-//    static final Map<String, Predicate<ColumnValue>> GOT_MONEY_ROW =
-//        ImmutableMap.of("wager_round_id", Predicates.equalTo(new ColumnValue(VoltType.BIGINT, WAGER_ROUND_ID)),
-//                        "wager_id", Predicates.equalTo(new ColumnValue(VoltType.BIGINT, WAGER_ID)),
-//                        "amount", Predicates.equalTo(new ColumnValue(VoltType.BIGINT, AMOUNT)),
-//                        "created", Predicates.<ColumnValue>notNull());
+    //    static final Map<String, Predicate<ColumnValue>> GOT_MONEY_ROW =
+    //        ImmutableMap.of("wager_round_id", Predicates.equalTo(new ColumnValue(VoltType.BIGINT, WAGER_ROUND_ID)),
+    //                        "wager_id", Predicates.equalTo(new ColumnValue(VoltType.BIGINT, WAGER_ID)),
+    //                        "amount", Predicates.equalTo(new ColumnValue(VoltType.BIGINT, AMOUNT)),
+    //                        "created", Predicates.<ColumnValue>notNull());
 
     protected Client client;
 

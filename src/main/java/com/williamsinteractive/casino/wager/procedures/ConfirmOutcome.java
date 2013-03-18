@@ -25,7 +25,7 @@ public class ConfirmOutcome extends VoltProcedure {
     public static final byte DUPLICATE_CONFIRMATION = 1;
     public static final byte MISSING_OUTCOME = 2;
 
-    private static final String[] ERROR_MESSAGES = new String[] {
+    private static final String[] ERROR_MESSAGES = new String[]{
         "SUCCESS",
         "Wager round with id %d already confirmed",
         "Wager round with id %d has no outcome"

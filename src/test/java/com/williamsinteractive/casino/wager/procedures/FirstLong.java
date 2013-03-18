@@ -13,6 +13,6 @@ import javax.annotation.Nullable;
 public class FirstLong implements Function<VoltTable, Object[]> {
     @Nullable
     public Object[] apply(VoltTable input) {
-        return new Object[] { input.getLong(0) };
+        return new Object[]{input.getLong(0)};
     }
 }

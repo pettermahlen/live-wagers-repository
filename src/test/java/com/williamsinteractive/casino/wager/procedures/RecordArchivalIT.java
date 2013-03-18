@@ -8,7 +8,6 @@ import org.voltdb.client.ClientResponse;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -23,7 +22,7 @@ public class RecordArchivalIT extends VoltDbTestSupport {
         prepareWagerRound();
         prepareConfirmedOutcome();
 
-        ClientResponse response  = recordArchival();
+        ClientResponse response = recordArchival();
 
         assertThat(response.getAppStatus(), equalTo(RecordArchival.SUCCESS));
 
@@ -36,7 +35,7 @@ public class RecordArchivalIT extends VoltDbTestSupport {
 
     @Test
     public void shouldFailIfNoWager() throws Exception {
-        ClientResponse response  = recordArchival();
+        ClientResponse response = recordArchival();
 
         assertThat(response.getAppStatus(), equalTo(RecordArchival.NO_WAGER));
         assertThat(response.getAppStatusString(), containsString("No wager found"));
@@ -49,7 +48,7 @@ public class RecordArchivalIT extends VoltDbTestSupport {
         prepareWager();
         prepareOutcome();
 
-        ClientResponse response  = recordArchival();
+        ClientResponse response = recordArchival();
 
         assertThat(response.getAppStatus(), equalTo(RecordArchival.NO_OUTCOME));
         assertThat(response.getAppStatusString(), containsString("No outcome found"));
@@ -63,7 +62,7 @@ public class RecordArchivalIT extends VoltDbTestSupport {
         prepareConfirmedOutcome();
         prepareArchival();
 
-        ClientResponse response  = recordArchival();
+        ClientResponse response = recordArchival();
 
         assertThat(response.getAppStatus(), equalTo(RecordArchival.ALREADY_ARCHIVED));
         assertThat(response.getAppStatusString(), containsString("has already been archived"));

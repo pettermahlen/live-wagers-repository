@@ -23,7 +23,7 @@ public class RecordArchival extends VoltProcedure {
         "UPDATE wager_round SET archive_timestamp = ? WHERE wager_round_id = ?"
     );
 
-    private static final String[] ERROR_MESSAGES = new String[] {
+    private static final String[] ERROR_MESSAGES = new String[]{
         "SUCCESS",
         "wager_round_id %d has already been archived",
         "No wager found for wager_round_id %d",

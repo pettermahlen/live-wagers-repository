@@ -7,10 +7,10 @@ import org.voltdb.VoltTable;
 import java.util.Objects;
 
 /**
-* TODO: document!
-*
-* @author Petter Måhlén
-*/
+ * TODO: document!
+ *
+ * @author Petter Måhlén
+ */
 class ColumnValueMatcher extends TypeSafeMatcher<VoltTable> {
     private final ColumnValue columnValue;
 

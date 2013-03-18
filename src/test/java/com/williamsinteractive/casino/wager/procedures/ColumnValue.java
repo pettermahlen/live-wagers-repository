@@ -3,10 +3,10 @@ package com.williamsinteractive.casino.wager.procedures;
 import org.voltdb.VoltType;
 
 /**
-* TODO: document!
-*
-* @author Petter Måhlén
-*/
+ * TODO: document!
+ *
+ * @author Petter Måhlén
+ */
 class ColumnValue {
     String column;
     VoltType type;

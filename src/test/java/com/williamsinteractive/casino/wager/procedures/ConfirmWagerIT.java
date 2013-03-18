@@ -69,7 +69,8 @@ public class ConfirmWagerIT extends VoltDbTestSupport {
         ClientResponse response = confirmWager();
 
         assertThat(response.getAppStatus(), equalTo(ConfirmWager.DUPLICATE_CONFIRMATION));
-        assertThat(response.getAppStatusString(), containsString("Wager with wager round id " + WAGER_ROUND_ID + " and wager id " + WAGER_ID + " already confirmed"));
+        assertThat(response.getAppStatusString(),
+                   containsString("Wager with wager round id " + WAGER_ROUND_ID + " and wager id " + WAGER_ID + " already confirmed"));
     }
 
 

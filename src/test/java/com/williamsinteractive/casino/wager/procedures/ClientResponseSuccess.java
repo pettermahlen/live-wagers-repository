@@ -1,7 +1,6 @@
 package com.williamsinteractive.casino.wager.procedures;
 
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.voltdb.client.ClientResponse;
 
